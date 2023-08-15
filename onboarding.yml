@@ -1,0 +1,343 @@
+openapi: 3.0.3
+info:
+  title: Onboarding - OpenAPI 3.0
+  description: |-
+    This is an onboarding students list Server based on the OpenAPI 3.0 specification. You can find out more about all the students.
+    Some useful links:
+    - [The onboarding repository](https://github.com/swagger-api/swagger-onboarding)
+    - [The source API definition for the onboarding](https://github.com/ressources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.2.1
+externalDocs:
+  description: Find out more about Onboarding
+  url: http://onboardingStudent.io
+servers:
+  - url: https://onboarding23.swagger.io/api/v3
+tags:
+  - name: student
+    description: Everything about the students
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+paths:
+  /student:
+    put:
+      tags:
+        - student
+      summary: Update an existing student
+      description: Update an existing student by id
+      operationId: updateStudent
+      requestBody:
+        description: Update en existing student Onboarding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Student'
+            application/x-www-form-urlencoded:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not found
+        '405':
+          description: Validation exception
+      security:
+        - onboarding_auth:
+          - write:students
+          - read:students
+    post:
+      tags:
+        - student
+      summary: Add a new student to the list
+      description: Add a new student to the list
+      operationId: addStudent
+      requestBody:
+        description: Create a new student in the list
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '405':
+          description: Invalid input
+      security:
+        - onboarding_auth:
+          - write:students
+          - read:students
+  /get/findByName:        
+    get:
+      tags:
+        - student
+      summary: Finds students by name
+      description: Multiple name values can be provaided with comma separated strings
+      operationId: findStudentByName
+      parameters:
+        - name: name
+          in: query
+          description: Name values that nedd to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid status value
+  /student/findByBirthdate:
+    get:
+      tags:
+        - student
+      summary: Finds Students by Birthdate
+      description: Multiple birthdate values can be provided with comma separated strings. Use "2000-01-01" for testing.
+      operationId: findStudentsByBirthdate
+      parameters:
+        - name: birthdate
+          in: query
+          description: Tags to filter by
+          required: false
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+            application/xml:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid birthdate value
+      security:
+        - onboarding_auth:
+          - write:students
+          - read:students
+  /student/{id}:
+    get:
+      tags:
+        - student
+      summary: Find student by id
+      description: Returns a single student
+      operationId: getStudentById
+      parameters:
+        - name: id
+          in: path
+          description: ID of a student to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Student'
+            application/x-www-form-urlencoded:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+         description: Student not found
+      security:
+        - onboarding_auth:
+          - write:students
+          - read:students
+    post:
+      tags:
+        - student
+      summary: Updates a student in the list with form data
+      description: ''
+      operationId: updateStudentWithForm
+      parameters:
+        - name: id
+          in: path
+          description: ID of a student that needs to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: name
+          in: query
+          description: Name of the student that needs to be updated
+          schema: 
+            type: string
+        - name: birthdate
+          in: query
+          description: The birthdateof the student that needs to be updated
+          schema: 
+            type: string
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - onboarding_auth:
+          - write:students
+          - read:students
+    delete:
+      tags:
+        - student
+      summary: Deletes a student
+      description: delete a student
+      operationId: deleteStudent
+      parameters:
+        - name: id
+          in: path
+          description: Student id to delete
+          required: true
+          schema: 
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid student value
+      security:
+        - onboarding_auth:
+          - write:students
+          - read:students
+  /student/{id}/uploadImage:
+    post:
+      tags:
+        - student
+      summary: uploads an image
+      description: Uploading a student image
+      operationId: uploadFile
+      parameters:
+        - name: id
+          in: path
+          description: ID of the student to updated
+          required: true
+          schema: 
+            type: string
+            format: binary
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      security:
+        - onboarding_auth:
+          - write:students
+          - read:students
+      
+components:
+  schemas:
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 0
+        name:
+          type: string
+          example: "Rakoto"
+        birthdate:
+          type: string
+          example: "2000-01-01"
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml: 
+        name: '##default'
+  requestBodies:
+    Student: 
+      description: Student object that needs to be added to the list
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Student'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Student'
+    StudentArray:
+      description: List of student object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#components/schemas/Student'
+  securitySchemes:
+    onboarding_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://onboarding23.swagger.io/oauth/authorize
+          scopes:
+            write:students: modify students 
+            read:students: read students
+            
+
+
