@@ -17,7 +17,7 @@ externalDocs:
   description: Find out more about Onboarding
   url: http://onboardingStudent.io
 servers:
-  - url: https://onboarding23.swagger.io/api/v3
+  - url:  https://petstore3.swagger.io/api/v3
 tags:
   - name: student
     description: Everything about the students
@@ -33,7 +33,7 @@ paths:
       description: Update an existing student by id
       operationId: updateStudent
       requestBody:
-        description: Update en existing student Onboarding
+        description: Update en existing student 
         content:
           application/json:
             schema:
@@ -64,10 +64,6 @@ paths:
           description: Student not found
         '405':
           description: Validation exception
-      security:
-        - onboarding_auth:
-          - write:students
-          - read:students
     post:
       tags:
         - student
@@ -270,8 +266,8 @@ paths:
           description: ID of the student to updated
           required: true
           schema: 
-            type: string
-            format: binary
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -283,7 +279,136 @@ paths:
         - onboarding_auth:
           - write:students
           - read:students
-      
+  /teacher:
+    post:
+      tags:
+        - teacher
+      summary: Add a new teacher
+      description: Add a new teacher
+      operationId: addTeacher
+      requestBody:
+        description: Create a new teacher
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Teacher'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Teacher'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Teacher'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+        '405':
+          description: Invalid input
+      security:
+        - onboarding_auth:
+          - write:teachers
+          - read:teachers 
+  /get/findTeacherfirstname:        
+    get:
+      tags:
+        - teacher
+      summary: Finds teachers by firstname
+      description: Multiple name values can be provided with comma separated strings
+      operationId: findTeacherByFirstname
+      parameters:
+        - name: firstname
+          in: query
+          description: Name values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'
+        '400':
+          description: Invalid status value
+  /get/findTeacherBylastname:        
+    get:
+      tags:
+        - teacher
+      summary: Finds teachers by lastname
+      description: Multiple name values can be provided4 with comma separated strings
+      operationId: findTeacherByLastName
+      parameters:
+        - name: lastname
+          in: query
+          description: Name values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'
+        '400':
+          description: Invalid status value
+
+  /get/findTeacherByCourseName:        
+    get:
+      tags:
+        - teacher
+      summary: Finds teachers by course's name
+      description: Multiple name values can be provaided with comma separated strings
+      operationId: findTeacherByCourseName
+      parameters:
+        - name: courseName
+          in: query
+          description: Name values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Teacher'
+        '400':
+          description: Invalid status value
 components:
   schemas:
     Student:
@@ -311,6 +436,27 @@ components:
           type: string
       xml: 
         name: '##default'
+    Teacher:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: "Tokimahery"
+        lastname:
+          type: string
+          example: "Ramarozaka"
+        courses:
+          type: object
+          properties:
+            courseName:
+              type: string
+              example: "Algorithmique"
+            courseCode:
+              type: string
+              example: "PROG1"
+            duration:
+              type: number
+              example: 30
   requestBodies:
     Student: 
       description: Student object that needs to be added to the list
@@ -328,7 +474,24 @@ components:
           schema:
             type: array
             items:
-              $ref: '#components/schemas/Student'
+              $ref: '#/components/schemas/Student'
+    Teacher:
+      description: Teacher object that needs to be added to the list
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Teacher'
+        application/xml:
+          schema: 
+            $ref: '#/components/schemas/Teacher'
+    TeacherArray:
+      description: List of teacher object
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '#/components/schemas/Teacher'
   securitySchemes:
     onboarding_auth:
       type: oauth2
@@ -338,6 +501,8 @@ components:
           scopes:
             write:students: modify students 
             read:students: read students
+            write:teachers: modify teachers
+            read:teachers: read teachers
             
 
 
